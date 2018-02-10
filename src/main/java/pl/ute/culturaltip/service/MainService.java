@@ -1,4 +1,4 @@
-package pl.ute.culturaltip;
+package pl.ute.culturaltip.service;
 
 import android.annotation.SuppressLint;
 import android.app.IntentService;

@@ -1,21 +1,24 @@
 package pl.ute.culturaltip.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.dominik.ute.R;
 import com.google.gson.Gson;
 
+import pl.ute.culturaltip.R;
 import pl.ute.culturaltip.data.NotificationData;
 
 /**
  * Created by dominik on 10.02.18.
  */
 
-public class NotificationActivity extends AbstractActivity {
+public class NotificationActivity extends AbstractClosableActivity {
 
 
     private NotificationData currentNotification;
@@ -35,6 +38,15 @@ public class NotificationActivity extends AbstractActivity {
         if (!notification.trim().isEmpty()) {
             restoreCurrentNotification(notification);
         }
+
+        Button newNotificationButton = (Button) findViewById(R.id.new_notification_btn);
+
+        newNotificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), SelectPoiActivity.class));
+            }
+        });
     }
 
     @Override

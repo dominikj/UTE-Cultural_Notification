@@ -1,15 +1,22 @@
 <resources>
-    <string name="app_name">Cultural tip</string>
+    <string name="app_name">Cultural Notification</string>
     <string name="title_activity_maps">Map</string>
     <string name="add_friend_activity">Add Friend</string>
     <string name="notification_activity">Notification</string>
+    <string name="select_poi_activity">Select point of interest</string>
     <string name="show_map">Show map</string>
     <string name="notification">Notification</string>
     <string name="add_friend">Add friend</string>
     <string name="remove_friend">Remove friend</string>
     <string name="close_map">Close map</string>
     <string name="close_add">Close</string>
+    <string name="forward">Forward</string>
+    <string name="search">Search</string>
+    <string name="radius">Radius [m]</string>
+    <string name="back">Back</string>
+    <string name="show_poi_on_map">Show on map</string>
     <string name="save_add">Save</string>
+    <string name="new_notification">New</string>
     <string name="position_data">%1$s : %2$s</string>
     <string name="empty_field_error">field cannot be empty</string>
     <string name="friend_added_msg">Friend is added</string>
@@ -17,4 +24,7 @@
     <string name="message">Message</string>
     <string name="empty_text">-----------</string>
     <string name="status">Status</string>
+    <string name="items_list">Items</string>
+    <string name="friends_list">Friends</string>
+    <string name="poi_list">Points of interest</string>
 </resources>

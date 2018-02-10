@@ -1,6 +1,8 @@
 package pl.ute.culturaltip.fragment;
 
+import android.app.Activity;
 import android.app.ListFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,15 +10,17 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-
-import com.example.dominik.ute.R;
+import android.widget.TextView;
 
 import java.util.List;
+
+import pl.ute.culturaltip.R;
 
 import static android.R.layout.simple_list_item_1;
 
 public class DefaultListFragment extends ListFragment implements OnItemClickListener {
     private int currentSelectedPosition = -1;
+    public static final int NONE_SELECTED = -1;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -29,7 +33,7 @@ public class DefaultListFragment extends ListFragment implements OnItemClickList
         super.onActivityCreated(savedInstanceState);
     }
 
-    public void setFriendsList(List<String> items) {
+    public void setItemsList(List<String> items) {
         ArrayAdapter adapter = new ArrayAdapter<>(getActivity(), simple_list_item_1);
         adapter.addAll(items);
         setListAdapter(adapter);
@@ -37,7 +41,7 @@ public class DefaultListFragment extends ListFragment implements OnItemClickList
         getListView().setOnItemClickListener(this);
     }
 
-    public void addFriendToList(String item) {
+    public void addItemToList(String item) {
         ((ArrayAdapter) getListAdapter()).add(item);
     }
 
@@ -48,5 +52,9 @@ public class DefaultListFragment extends ListFragment implements OnItemClickList
 
     public int getSelectedPosition() {
         return this.currentSelectedPosition;
+    }
+
+    public void setListName(String name) {
+        ((TextView) getActivity().findViewById(R.id.list_title)).setText(name);
     }
 }

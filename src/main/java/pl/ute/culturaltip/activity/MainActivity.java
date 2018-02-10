@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.dominik.ute.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -26,8 +25,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import pl.ute.culturaltip.MainService;
-import pl.ute.culturaltip.Receiver;
+import pl.ute.culturaltip.constants.Constants.Permission;
+import pl.ute.culturaltip.service.MainService;
+import pl.ute.culturaltip.R;
+import pl.ute.culturaltip.receiver.ReceiverMainActivity;
 import pl.ute.culturaltip.constants.Constants;
 import pl.ute.culturaltip.constants.Constants.Location;
 import pl.ute.culturaltip.data.FriendData;
@@ -40,22 +41,20 @@ import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.Manifest.permission.READ_SMS;
 import static pl.ute.culturaltip.constants.Constants.Friend.FRIEND_NAME;
 import static pl.ute.culturaltip.constants.Constants.Friend.FRIEND_PHONE;
+import static pl.ute.culturaltip.constants.Constants.Permission.*;
+import static pl.ute.culturaltip.constants.Constants.Permission.REQUEST_READ_PHONE_PERMISSIONS;
+import static pl.ute.culturaltip.fragment.DefaultListFragment.NONE_SELECTED;
 
 
 public class MainActivity extends AppCompatActivity {
-    private static final int REQUEST_READ_PHONE_PERMISSIONS = 1;
-    private static final String[] REQUEST_PERMISSIONS = {READ_PHONE_STATE, INTERNET, ACCESS_COARSE_LOCATION,
-            READ_SMS, ACCESS_FINE_LOCATION};
     private static final int LATITUDE = 0;
     private static final int LONGITUDE = 1;
     private static final int REQUEST_CODE = 1;
-    private static final int NONE_SELECTED = -1;
     private static final String FRIENDS_PREFERENCIES_KEY = "friends";
 
     private List<FriendData> friends = new ArrayList<>();
     private DefaultListFragment friendFragment;
-    private Receiver receiver;
-    private IntentFilter filter;
+    private ReceiverMainActivity receiverMainActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +62,9 @@ public class MainActivity extends AppCompatActivity {
         getUserPermissions();
 
         setContentView(R.layout.activity_main);
-        receiver = new Receiver();
-        filter = new IntentFilter(Constants.IntentCode.LOCATION_INTENT_MAIN_ACTIVITY);
-        registerReceiver(receiver, filter);
+        receiverMainActivity = new ReceiverMainActivity();
+        IntentFilter filter = new IntentFilter(Constants.IntentCode.LOCATION_INTENT_MAIN_ACTIVITY);
+        registerReceiver(receiverMainActivity, filter);
 
         friendFragment = (DefaultListFragment) getFragmentManager()
                 .findFragmentById(R.id.friends_list);
@@ -81,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         startService(new Intent(this, MainService.class));
+        friendFragment.setListName(getString(R.string.friends_list));
+
         Button showMapButton = (Button) findViewById(R.id.show_map_btn);
         Button addFriendButton = (Button) findViewById(R.id.add_friend_btn);
         Button removeFriendButton = (Button) findViewById(R.id.remove_friend_btn);
@@ -112,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                     int selectedPosition = friendFragment.getSelectedPosition();
                     if (MainActivity.this.friends.size() != 0 && selectedPosition != NONE_SELECTED) {
                         MainActivity.this.friends.remove(selectedPosition);
-                        friendFragment.setFriendsList(buildFriendItemList(MainActivity.this.friends));
+                        friendFragment.setItemsList(buildFriendItemList(MainActivity.this.friends));
                     }
                 }
             });
@@ -149,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(receiver);
+        unregisterReceiver(receiverMainActivity);
 
     }
 
@@ -175,12 +176,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setFriendList(List<FriendData> friends) {
-        friendFragment.setFriendsList(buildFriendItemList(friends));
+        friendFragment.setItemsList(buildFriendItemList(friends));
     }
 
     private void addToFriendList(FriendData friend) {
         friends.add(friend);
-        friendFragment.addFriendToList(buildFriendItem(friend));
+        friendFragment.addItemToList(buildFriendItem(friend));
         Toast.makeText(getContext(), getString(R.string.friend_added_msg), Toast.LENGTH_SHORT)
                 .show();
 

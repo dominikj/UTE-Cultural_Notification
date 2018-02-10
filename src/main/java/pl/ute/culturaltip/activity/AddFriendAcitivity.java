@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.dominik.ute.R;
+import pl.ute.culturaltip.R;
 
 import static pl.ute.culturaltip.constants.Constants.Friend.FRIEND_NAME;
 import static pl.ute.culturaltip.constants.Constants.Friend.FRIEND_PHONE;
@@ -16,7 +16,7 @@ import static pl.ute.culturaltip.constants.Constants.Friend.FRIEND_PHONE;
  * Created by dominik on 09.02.18.
  */
 
-public class AddFriendAcitivity extends AbstractActivity {
+public class AddFriendAcitivity extends AbstractClosableActivity {
 
     public AddFriendAcitivity() {
         super(R.id.close_add_btn);
@@ -24,8 +24,8 @@ public class AddFriendAcitivity extends AbstractActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_add_friend);
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_friend);
 
         Button saveNewFriend = (Button) findViewById(R.id.save_add_btn);
 

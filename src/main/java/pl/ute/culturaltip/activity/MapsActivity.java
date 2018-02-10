@@ -6,13 +6,14 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.dominik.ute.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import pl.ute.culturaltip.R;
 
 import static pl.ute.culturaltip.constants.Constants.Location.LATITUDE;
 import static pl.ute.culturaltip.constants.Constants.Location.LONGITUDE;

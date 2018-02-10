@@ -2,7 +2,7 @@ package pl.ute.culturaltip.enums;
 
 public enum NotificationStatus {
     WAITING_TO_SEND("Waiting to send"),
-    SENDED("Sended");
+    SENT("Sent");
 
     private String name;
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.dominik.ute">
+    package="pl.ute.culturaltip">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name="pl.ute.culturaltip.MainService" />
+        <service android:name="pl.ute.culturaltip.service.MainService" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -51,6 +51,10 @@
         <activity
             android:name="pl.ute.culturaltip.activity.NotificationActivity"
             android:label="@string/notification_activity"/>
+
+        <activity
+            android:name="pl.ute.culturaltip.activity.SelectPoiActivity"
+            android:label="@string/select_poi_activity"/>
 
     </application>
 
