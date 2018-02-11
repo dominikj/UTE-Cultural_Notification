@@ -60,6 +60,10 @@
             android:name="pl.ute.culturaltip.activity.SelectArticleActivity"
             android:label="@string/select_article_activity"/>
 
+        <activity
+            android:name="pl.ute.culturaltip.activity.CreateMessageActivity"
+            android:label="@string/create_message_activity"/>
+
     </application>
 
 </manifest>

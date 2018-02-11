@@ -2,6 +2,8 @@ package pl.ute.culturaltip.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +16,9 @@ import pl.ute.culturaltip.constants.Constants;
 import pl.ute.culturaltip.fragment.DefaultListFragment;
 import pl.ute.culturaltip.receiver.ReceiverSelectArticleActivity;
 import pl.ute.culturaltip.restapiutils.RestApiParams;
+
+import static pl.ute.culturaltip.constants.Constants.Article.NAME_OF_SELECTED_ARTICLE;
+import static pl.ute.culturaltip.constants.Constants.Article.OWN_MESSAGE;
 
 /**
  * Created by dominik on 11.02.18.
@@ -43,15 +48,33 @@ public class SelectArticleActivity extends AbstractAsynchronousListActivity {
                 .findFragmentById(R.id.article_list));
         getListFragment().setListName(getString(R.string.article_list));
         nameOfSelectedPoi = getIntent().getExtras().getString(Constants.Poi.NAME_OF_SELECTED_POI);
+        Button createOwnButton = (Button)
+                findViewById(R.id.create_own_notification_select_article_btn);
 
-        new OpenSearchHttpRequestTask(this).execute(createSearchArticleParams(nameOfSelectedPoi));
+        if (createOwnButton != null) {
+            createOwnButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), CreateMessageActivity.class);
+                    intent.putExtra(OWN_MESSAGE, true);
+                    startActivity(intent);
+                }
+            });
+        }
+
+        new OpenSearchHttpRequestTask(this)
+                .execute(createSearchArticleParams(nameOfSelectedPoi));
     }
 
 
     @Override
     protected Intent createIntentForForward() {
-        return null;
+        Intent intent = new Intent(getContext(), CreateMessageActivity.class);
+        OpenSearchItem selectedArticle = getArticles().get(getListFragment().getSelectedPosition());
+        intent.putExtra(NAME_OF_SELECTED_ARTICLE, selectedArticle.getTitle());
+        return intent;
     }
+
 
     public List<OpenSearchItem> getArticles() {
         return getListElements();
@@ -63,10 +86,6 @@ public class SelectArticleActivity extends AbstractAsynchronousListActivity {
 
     public DefaultListFragment getArticleListFragment() {
         return getListFragment();
-    }
-
-    public void enableForwardButton() {
-        getForwardButton().setEnabled(true);
     }
 
     private RestApiParams createSearchArticleParams(String query) {

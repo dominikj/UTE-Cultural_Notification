@@ -39,9 +39,16 @@ public abstract class AbstractNavigationActivity extends AbstractClosableActivit
         forwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(createIntentForForward(), REQUEST_CODE);
+                Intent intent = createIntentForForward();
+                if (intent != null && intent.getExtras() != null) {
+                    startActivityForResult(intent, REQUEST_CODE);
+                }
             }
         });
+    }
+
+    public void enableForwardButton() {
+        getForwardButton().setEnabled(true);
     }
 
     protected abstract Intent createIntentForForward();

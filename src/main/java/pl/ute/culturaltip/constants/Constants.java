@@ -23,11 +23,19 @@ public interface Constants {
 
     interface Article {
         String ARTICLE_RESPONSE = "articleResponse";
+        String NAME_OF_SELECTED_ARTICLE = "nameOfSelectedArticle";
+        String OWN_MESSAGE = "ownMessage";
+    }
+
+    interface Extracts {
+        String EXTRACTS_RESPONSE = "extractsResponse";
     }
 
     interface IntentCode {
         String LOCATION_INTENT_MAIN_ACTIVITY = "pl.ute.culturaltip.mainActivity.location";
         String POI_INTENT_SELECT_POI_ACTIVITY = "pl.ute.culturaltip.selectPoiActivity.poiList";
+        String MESSAGE_INTENT_CREATE_MESSAGE_ACTIVITY =
+                "pl.ute.culturaltip.createMessageActivity.message";
         String ARTICLE_SEARCH_INTENT_SELECT_ARTICLE_ACTIVITY =
                 "pl.ute.culturaltip.selectArticleActivity.articleList";
     }

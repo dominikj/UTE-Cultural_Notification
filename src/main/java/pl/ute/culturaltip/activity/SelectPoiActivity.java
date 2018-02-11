@@ -53,7 +53,8 @@ public class SelectPoiActivity extends AbstractAsynchronousListActivity
             "https://maps.googleapis.com/maps/api/place/textsearch/json";
     private static final int MIN_UPDATE_TIME = 60;
     private static final int MIN_DISTANCE_CHANGE = 10;
-    private static final String API_KEY = "AIzaSyBeZxPitp7UPkyDzYPS1rpLSMvObNcmA-Q";
+//    private static final String API_KEY = "AIzaSyBeZxPitp7UPkyDzYPS1rpLSMvObNcmA-Q";
+    private static final String API_KEY = "AIzaSyB3L5EKLJhxgz0zu5TAJ2nHG0nwyVktGoE";
 
     private int radius = DEFAULT_RADIUS;
     private TextView radiusView;

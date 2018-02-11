@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import pl.ute.culturaltip.R;
 
 /**
  * Created by dominik on 10.02.18.
@@ -37,6 +40,10 @@ public abstract class AbstractClosableActivity extends AppCompatActivity {
             }
         });
         super.onResume();
+    }
+
+    public void showToast(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     protected Context getContext() {

@@ -5,6 +5,7 @@
     <string name="notification_activity">Notification</string>
     <string name="select_poi_activity">Select point of interest</string>
     <string name="select_article_activity">Select interesting article</string>
+    <string name="create_message_activity">Message</string>
     <string name="show_map">Show map</string>
     <string name="notification">Notification</string>
     <string name="add_friend">Add friend</string>
@@ -12,6 +13,9 @@
     <string name="close_map">Close map</string>
     <string name="close_add">Close</string>
     <string name="forward">Forward</string>
+    <string name="create">Create</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
     <string name="search">Search</string>
     <string name="radius">Radius [m]</string>
     <string name="back">Back</string>

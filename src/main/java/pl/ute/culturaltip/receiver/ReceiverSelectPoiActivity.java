@@ -31,7 +31,9 @@ public class ReceiverSelectPoiActivity extends BroadcastReceiver {
                 gson.fromJson(intent.getStringExtra(POI_RESPONSE), PoiResponse.class);
 
         if (poiResponse.getResults() == null || poiResponse.getResults().isEmpty()) {
-            activity.getPoiListFragment().setItemsList(Arrays.asList("We are sorry, but no results found"));
+            List<String> errorItems = Arrays.asList("We are sorry, but no results found",
+                    poiResponse.getErrorMessage());
+            activity.getPoiListFragment().setItemsList(errorItems);
             activity.disableShowMapAndForwardButtons();
             return;
         }
