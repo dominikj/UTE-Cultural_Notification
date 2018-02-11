@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -17,6 +19,7 @@ import pl.ute.culturaltip.restapiutils.RestApiParams;
 
 import static pl.ute.culturaltip.constants.Constants.Article.NAME_OF_SELECTED_ARTICLE;
 import static pl.ute.culturaltip.constants.Constants.IntentCode.MESSAGE_INTENT_CREATE_MESSAGE_ACTIVITY;
+import static pl.ute.culturaltip.constants.Constants.Message.CREATED_MESSAGE;
 
 /**
  * Created by dominik on 11.02.18.
@@ -33,13 +36,16 @@ public class CreateMessageActivity extends AbstractNavigationActivity {
     private BroadcastReceiver receiverActivity;
 
     public CreateMessageActivity() {
-        super(R.id.create_message_btn, R.id.back_create_message_btn);
+        super(R.id.forward_create_message_btn, R.id.back_create_message_btn);
 
     }
 
     @Override
     protected Intent createIntentForForward() {
-        return null;
+        Intent intent = new Intent(getContext(), SetTimeNotificationActivity.class);
+        intent.putExtra(CREATED_MESSAGE, message);
+
+        return intent;
     }
 
     @Override
@@ -50,11 +56,16 @@ public class CreateMessageActivity extends AbstractNavigationActivity {
         receiverActivity = new ReceiverCreateMessageActivity();
         IntentFilter filter = new IntentFilter(MESSAGE_INTENT_CREATE_MESSAGE_ACTIVITY);
         registerReceiver(receiverActivity, filter);
+
+        if (savedInstanceState != null) {
+            message = savedInstanceState.getString(Constants.Message.CREATED_MESSAGE);
+        }
+
     }
 
     @Override
     protected void onResume() {
-        boolean isOwnMessage = getIntent().getExtras().getBoolean(Constants.Article.OWN_MESSAGE);
+        boolean isOwnMessage = getIntent().getExtras().getBoolean(Constants.Message.IS_OWN_MESSAGE);
         super.onResume(isOwnMessage, true);
         messageText = (TextView) findViewById(R.id.message_text);
 
@@ -62,10 +73,37 @@ public class CreateMessageActivity extends AbstractNavigationActivity {
             nameOfSelectedArticle = getIntent().getExtras().getString(NAME_OF_SELECTED_ARTICLE);
         }
 
-        if (!isOwnMessage) {
+        if (isOwnMessage) {
+            messageText.setText(nameOfSelectedArticle);
+            return;
+        }
+        messageText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //NOP
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //NOP
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                message = s.toString();
+            }
+        });
+
+        if (message == null) {
             new ExtractsArticleHttpRequestTask(this)
                     .execute(createExtractsArticleParams(nameOfSelectedArticle));
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(Constants.Message.CREATED_MESSAGE, message);
     }
 
     @Override
@@ -73,10 +111,6 @@ public class CreateMessageActivity extends AbstractNavigationActivity {
         super.onDestroy();
         unregisterReceiver(receiverActivity);
 
-    }
-
-    public String getMessage() {
-        return message;
     }
 
     public void setMessage(String message) {

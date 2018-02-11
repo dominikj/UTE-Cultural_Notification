@@ -53,7 +53,7 @@ public class SelectPoiActivity extends AbstractAsynchronousListActivity
             "https://maps.googleapis.com/maps/api/place/textsearch/json";
     private static final int MIN_UPDATE_TIME = 60;
     private static final int MIN_DISTANCE_CHANGE = 10;
-//    private static final String API_KEY = "AIzaSyBeZxPitp7UPkyDzYPS1rpLSMvObNcmA-Q";
+    //    private static final String API_KEY = "AIzaSyBeZxPitp7UPkyDzYPS1rpLSMvObNcmA-Q";
     private static final String API_KEY = "AIzaSyB3L5EKLJhxgz0zu5TAJ2nHG0nwyVktGoE";
 
     private int radius = DEFAULT_RADIUS;
@@ -125,8 +125,11 @@ public class SelectPoiActivity extends AbstractAsynchronousListActivity
     @Override
     protected Intent createIntentForForward() {
         Intent intent = new Intent(getContext(), SelectArticleActivity.class);
-        PoiResponseResult selectedResult = getPois().get(getListFragment().getSelectedPosition());
-        intent.putExtra(NAME_OF_SELECTED_POI, selectedResult.getName());
+        int selectedPosition = getListFragment().getSelectedPosition();
+        if (getListElements() != null && selectedPosition != NONE_SELECTED) {
+            PoiResponseResult selectedResult = getPois().get(selectedPosition);
+            intent.putExtra(NAME_OF_SELECTED_POI, selectedResult.getName());
+        }
         return intent;
     }
 

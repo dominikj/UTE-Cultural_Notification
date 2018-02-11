@@ -51,6 +51,11 @@ public abstract class AbstractNavigationActivity extends AbstractClosableActivit
         getForwardButton().setEnabled(true);
     }
 
+    public void disableForwardButton() {
+        getForwardButton().setEnabled(false);
+    }
+
+
     protected abstract Intent createIntentForForward();
 
     protected final Button getForwardButton() {

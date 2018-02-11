@@ -24,7 +24,12 @@ public interface Constants {
     interface Article {
         String ARTICLE_RESPONSE = "articleResponse";
         String NAME_OF_SELECTED_ARTICLE = "nameOfSelectedArticle";
-        String OWN_MESSAGE = "ownMessage";
+    }
+    interface Message{
+
+        String IS_OWN_MESSAGE = "ownMessage";
+        String CREATED_MESSAGE = "createdMessage";
+
     }
 
     interface Extracts {

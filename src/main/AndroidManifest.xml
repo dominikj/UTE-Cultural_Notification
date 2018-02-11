@@ -64,6 +64,10 @@
             android:name="pl.ute.culturaltip.activity.CreateMessageActivity"
             android:label="@string/create_message_activity"/>
 
+        <activity
+            android:name="pl.ute.culturaltip.activity.SetTimeNotificationActivity"
+            android:label="@string/set_time_notificatinon_activity"/>
+
     </application>
 
 </manifest>

@@ -17,8 +17,9 @@ import pl.ute.culturaltip.fragment.DefaultListFragment;
 import pl.ute.culturaltip.receiver.ReceiverSelectArticleActivity;
 import pl.ute.culturaltip.restapiutils.RestApiParams;
 
+import static pl.ute.culturaltip.constants.Constants.Message.IS_OWN_MESSAGE;
 import static pl.ute.culturaltip.constants.Constants.Article.NAME_OF_SELECTED_ARTICLE;
-import static pl.ute.culturaltip.constants.Constants.Article.OWN_MESSAGE;
+import static pl.ute.culturaltip.fragment.DefaultListFragment.*;
 
 /**
  * Created by dominik on 11.02.18.
@@ -56,7 +57,12 @@ public class SelectArticleActivity extends AbstractAsynchronousListActivity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(), CreateMessageActivity.class);
-                    intent.putExtra(OWN_MESSAGE, true);
+                    if (isElementSelectedOnList()) {
+                        OpenSearchItem selectedArticle = getArticles().get(getListFragment()
+                                .getSelectedPosition());
+                        intent.putExtra(NAME_OF_SELECTED_ARTICLE, selectedArticle.getTitle());
+                    }
+                    intent.putExtra(IS_OWN_MESSAGE, true);
                     startActivity(intent);
                 }
             });
@@ -70,8 +76,10 @@ public class SelectArticleActivity extends AbstractAsynchronousListActivity {
     @Override
     protected Intent createIntentForForward() {
         Intent intent = new Intent(getContext(), CreateMessageActivity.class);
-        OpenSearchItem selectedArticle = getArticles().get(getListFragment().getSelectedPosition());
-        intent.putExtra(NAME_OF_SELECTED_ARTICLE, selectedArticle.getTitle());
+        if (isElementSelectedOnList()) {
+            OpenSearchItem selectedArticle = getArticles().get(getListFragment().getSelectedPosition());
+            intent.putExtra(NAME_OF_SELECTED_ARTICLE, selectedArticle.getTitle());
+        }
         return intent;
     }
 
@@ -100,5 +108,9 @@ public class SelectArticleActivity extends AbstractAsynchronousListActivity {
         params.setQueryParams(queryParams);
 
         return params;
+    }
+
+    private boolean isElementSelectedOnList() {
+        return getListElements() != null && getListFragment().getSelectedPosition() != NONE_SELECTED;
     }
 }
