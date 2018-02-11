@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -33,13 +32,14 @@ import pl.ute.culturaltip.restapiutils.RestApiParams;
 import static android.Manifest.permission.READ_PHONE_STATE;
 import static pl.ute.culturaltip.constants.Constants.Permission.REQUEST_PERMISSIONS;
 import static pl.ute.culturaltip.constants.Constants.Permission.REQUEST_READ_PHONE_PERMISSIONS;
+import static pl.ute.culturaltip.constants.Constants.Poi.NAME_OF_SELECTED_POI;
 import static pl.ute.culturaltip.fragment.DefaultListFragment.NONE_SELECTED;
 
 /**
  * Created by dominik on 10.02.18.
  */
 
-public class SelectPoiActivity extends AbstractNavigationActivity
+public class SelectPoiActivity extends AbstractAsynchronousListActivity
         implements SeekBar.OnSeekBarChangeListener, LocationListener {
 
     private static final int REQUEST_CODE = 1;
@@ -47,7 +47,7 @@ public class SelectPoiActivity extends AbstractNavigationActivity
     private static final int DEFAULT_RADIUS = 1000;
     private static final String SEARCH_TYPES =
             "art_gallery|cemetery|church|zoo|museum|movie_rental|movie_theater|library"
-                    + "|park|painter|stadium";
+                    + "|park|painter|stadium|amusement_park|amusement_park|casino|shopping_mall";
 
     private static final String NEARBY_SEARCH_API =
             "https://maps.googleapis.com/maps/api/place/textsearch/json";
@@ -57,12 +57,9 @@ public class SelectPoiActivity extends AbstractNavigationActivity
 
     private int radius = DEFAULT_RADIUS;
     private TextView radiusView;
-    private DefaultListFragment poiListFragment;
     private Button searchPoisButton;
     private Button showOnMapButton;
     private LocationManager locationManager;
-    private ReceiverSelectPoiActivity receiverActivity;
-    private List<PoiResponseResult> pois;
     private boolean isButtonsEnabled;
 
     public SelectPoiActivity() {
@@ -76,14 +73,12 @@ public class SelectPoiActivity extends AbstractNavigationActivity
         getUserPermissions();
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        poiListFragment = (DefaultListFragment) getFragmentManager()
-                .findFragmentById(R.id.poi_list);
+        setListFragment((DefaultListFragment) getFragmentManager().findFragmentById(R.id.poi_list));
 
         searchPoisButton = (Button) findViewById(R.id.search_pois);
 
-        receiverActivity = new ReceiverSelectPoiActivity();
-        IntentFilter filter = new IntentFilter(Constants.IntentCode.POI_INTENT_SELECT_POI_ACTIVITY);
-        registerReceiver(receiverActivity, filter);
+        setIntentReceiver(new ReceiverSelectPoiActivity(),
+                Constants.IntentCode.POI_INTENT_SELECT_POI_ACTIVITY);
     }
 
     @SuppressLint("MissingSuperCall")
@@ -97,7 +92,7 @@ public class SelectPoiActivity extends AbstractNavigationActivity
         seekBar.setProgress(DEFAULT_RADIUS / PROGRESS_SCALE);
         radiusView.setText(String.valueOf(DEFAULT_RADIUS));
 
-        poiListFragment.setListName(getString(R.string.poi_list));
+        getListFragment().setListName(getString(R.string.poi_list));
 
         searchPoisButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("MissingPermission")
@@ -105,7 +100,8 @@ public class SelectPoiActivity extends AbstractNavigationActivity
             public void onClick(View v) {
                 if (isPermissionsGranted()) {
                     locationManager.requestLocationUpdates(
-                            LocationManager.GPS_PROVIDER, MIN_UPDATE_TIME, MIN_DISTANCE_CHANGE, getLocationListener());
+                            LocationManager.GPS_PROVIDER, MIN_UPDATE_TIME, MIN_DISTANCE_CHANGE,
+                            getLocationListener());
                     onLocationChanged(
                             locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER));
                 }
@@ -127,7 +123,10 @@ public class SelectPoiActivity extends AbstractNavigationActivity
 
     @Override
     protected Intent createIntentForForward() {
-        return null;
+        Intent intent = new Intent(getContext(), SelectArticleActivity.class);
+        PoiResponseResult selectedResult = getPois().get(getListFragment().getSelectedPosition());
+        intent.putExtra(NAME_OF_SELECTED_POI, selectedResult.getName());
+        return intent;
     }
 
     @Override
@@ -144,10 +143,6 @@ public class SelectPoiActivity extends AbstractNavigationActivity
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         //NOP
-    }
-
-    public DefaultListFragment getPoiListFragment() {
-        return this.poiListFragment;
     }
 
     @Override
@@ -173,13 +168,6 @@ public class SelectPoiActivity extends AbstractNavigationActivity
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(receiverActivity);
-
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == REQUEST_CODE) {
@@ -190,7 +178,15 @@ public class SelectPoiActivity extends AbstractNavigationActivity
     }
 
     public void setPois(List<PoiResponseResult> pois) {
-        this.pois = pois;
+        setListElements(pois);
+    }
+
+    public List<PoiResponseResult> getPois() {
+        return (List<PoiResponseResult>) getListElements();
+    }
+
+    public DefaultListFragment getPoiListFragment() {
+        return getListFragment();
     }
 
     public void enableShowMapAndForwardButtons() {
@@ -208,12 +204,14 @@ public class SelectPoiActivity extends AbstractNavigationActivity
     @Nullable
     private Intent createLocationIntent() {
         Intent intent = new Intent(getContext(), MapsActivity.class);
-        int selectedPosition = poiListFragment.getSelectedPosition();
-        if (selectedPosition != NONE_SELECTED && pois != null) {
+        int selectedPosition = getPoiListFragment().getSelectedPosition();
+        if (selectedPosition != NONE_SELECTED && getListElements() != null) {
             intent.putExtra(Constants.Location.LATITUDE,
-                    String.valueOf(pois.get(selectedPosition).getGeometry().getLocation().getLat()));
+                    String.valueOf(getPois().get(selectedPosition)
+                            .getGeometry().getLocation().getLat()));
             intent.putExtra(Constants.Location.LONGITUDE,
-                    String.valueOf(pois.get(selectedPosition).getGeometry().getLocation().getLng()));
+                    String.valueOf(getPois().get(selectedPosition).
+                            getGeometry().getLocation().getLng()));
             return intent;
         }
         return null;

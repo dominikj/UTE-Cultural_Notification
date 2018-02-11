@@ -19,15 +19,16 @@ public class ReceiverMainActivity extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         TextView positionText = (TextView) ((Activity) context).findViewById(position_text);
-        String latitude = "", longtitude = "";
+        String latitude, longtitude;
 
-        if (intent.getExtras() != null) {
-            latitude = intent.getExtras().getString(Constants.Location.LATITUDE);
-            longtitude = intent.getExtras().getString(Constants.Location.LONGITUDE);
+        if (intent.getExtras() == null) {
             positionText.setText("Service is currently unavailable");
             positionText.setError("");
             return;
         }
+
+        latitude = intent.getExtras().getString(Constants.Location.LATITUDE);
+        longtitude = intent.getExtras().getString(Constants.Location.LONGITUDE);
         positionText.setText(context.getString(string.position_data, latitude, longtitude));
         (((Activity) context).findViewById(show_map_btn)).setEnabled(true);
     }

@@ -14,6 +14,7 @@ public abstract class AbstractNavigationActivity extends AbstractClosableActivit
 
     private int forwardButtonId = 0;
     private int backButtonId = 0;
+
     private Button forwardButton;
     private Button backButton;
 

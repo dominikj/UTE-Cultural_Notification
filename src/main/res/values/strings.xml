@@ -1,9 +1,10 @@
 <resources>
-    <string name="app_name">Cultural Notification</string>
+    <string name="app_name">Interesting Notification</string>
     <string name="title_activity_maps">Map</string>
     <string name="add_friend_activity">Add Friend</string>
     <string name="notification_activity">Notification</string>
     <string name="select_poi_activity">Select point of interest</string>
+    <string name="select_article_activity">Select interesting article</string>
     <string name="show_map">Show map</string>
     <string name="notification">Notification</string>
     <string name="add_friend">Add friend</string>
@@ -15,6 +16,7 @@
     <string name="radius">Radius [m]</string>
     <string name="back">Back</string>
     <string name="show_poi_on_map">Show on map</string>
+    <string name="create_own">Create own</string>
     <string name="save_add">Save</string>
     <string name="new_notification">New</string>
     <string name="position_data">%1$s : %2$s</string>
@@ -27,4 +29,5 @@
     <string name="items_list">Items</string>
     <string name="friends_list">Friends</string>
     <string name="poi_list">Points of interest</string>
+    <string name="article_list">Articles</string>
 </resources>

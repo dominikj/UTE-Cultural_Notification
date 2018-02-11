@@ -18,11 +18,18 @@ public interface Constants {
 
     interface Poi {
         String POI_RESPONSE = "poiResponse";
+        String NAME_OF_SELECTED_POI = "nameOfSelectedPoi";
+    }
+
+    interface Article {
+        String ARTICLE_RESPONSE = "articleResponse";
     }
 
     interface IntentCode {
         String LOCATION_INTENT_MAIN_ACTIVITY = "pl.ute.culturaltip.mainActivity.location";
         String POI_INTENT_SELECT_POI_ACTIVITY = "pl.ute.culturaltip.selectPoiActivity.poiList";
+        String ARTICLE_SEARCH_INTENT_SELECT_ARTICLE_ACTIVITY =
+                "pl.ute.culturaltip.selectArticleActivity.articleList";
     }
 
     interface Friend {
