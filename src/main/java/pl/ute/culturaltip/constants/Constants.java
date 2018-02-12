@@ -25,8 +25,9 @@ public interface Constants {
         String ARTICLE_RESPONSE = "articleResponse";
         String NAME_OF_SELECTED_ARTICLE = "nameOfSelectedArticle";
     }
-    interface Message{
 
+    interface Message {
+        String SEND_SMS_RESPONSE = "sendSmsResponse";
         String IS_OWN_MESSAGE = "ownMessage";
         String CREATED_MESSAGE = "createdMessage";
 
@@ -39,6 +40,8 @@ public interface Constants {
     interface IntentCode {
         String LOCATION_INTENT_MAIN_ACTIVITY = "pl.ute.culturaltip.mainActivity.location";
         String POI_INTENT_SELECT_POI_ACTIVITY = "pl.ute.culturaltip.selectPoiActivity.poiList";
+        String SEND_SMS_INTENT_NOTIFICATION_ACTIVITY =
+                "pl.ute.culturaltip.notificationActivity.sendSmsResponse";
         String MESSAGE_INTENT_CREATE_MESSAGE_ACTIVITY =
                 "pl.ute.culturaltip.createMessageActivity.message";
         String ARTICLE_SEARCH_INTENT_SELECT_ARTICLE_ACTIVITY =
@@ -48,6 +51,12 @@ public interface Constants {
     interface Friend {
         String FRIEND_NAME = "friendName";
         String FRIEND_PHONE = "friendPhone";
+        String FRIENDS_PREFERENCIES_KEY = "friends";
+        String FRIENDS_LIST = "friendsList";
+    }
+
+    interface Notification {
+        String CREATED_NOTIFICATION = "createdNotification";
     }
 
     interface Permission {

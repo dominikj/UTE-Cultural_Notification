@@ -5,7 +5,6 @@ import android.content.IntentFilter;
 
 import java.util.List;
 
-import pl.ute.culturaltip.api.google.PoiResponseResult;
 import pl.ute.culturaltip.fragment.DefaultListFragment;
 
 /**

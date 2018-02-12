@@ -4,10 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TimePicker;
 
+import com.google.gson.Gson;
+
 import java.util.Calendar;
 import java.util.Date;
 
 import pl.ute.culturaltip.R;
+import pl.ute.culturaltip.data.NotificationData;
+
+import static pl.ute.culturaltip.constants.Constants.Message.CREATED_MESSAGE;
+import static pl.ute.culturaltip.constants.Constants.Notification.CREATED_NOTIFICATION;
 
 /**
  * Created by dominik on 11.02.18.
@@ -34,13 +40,19 @@ public class SetTimeNotificationActivity extends AbstractNavigationActivity
     protected void onResume() {
         super.onResume(false, true);
         timePicker = (TimePicker) findViewById(R.id.time_picker_set_time_notification);
-        timePicker.setOnTimeChangedListener(this);
+        if (timePicker != null) {
+            timePicker.setOnTimeChangedListener(this);
+        }
     }
 
 
     @Override
     protected Intent createIntentForForward() {
-        return null;
+        Intent intent = new Intent(getContext(), NotificationActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Gson gson = new Gson();
+        intent.putExtra(CREATED_NOTIFICATION, gson.toJson(createNotification()));
+        return intent;
     }
 
     @Override
@@ -65,5 +77,12 @@ public class SetTimeNotificationActivity extends AbstractNavigationActivity
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
         return calendar.getTime();
+    }
+
+    private NotificationData createNotification() {
+        NotificationData notificationData = new NotificationData();
+        notificationData.setMessage(getIntent().getExtras().getString(CREATED_MESSAGE));
+        notificationData.setDate(getTime(hourOfDay, minute));
+        return notificationData;
     }
 }

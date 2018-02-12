@@ -39,6 +39,7 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.INTERNET;
 import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.Manifest.permission.READ_SMS;
+import static pl.ute.culturaltip.constants.Constants.Friend.FRIENDS_PREFERENCIES_KEY;
 import static pl.ute.culturaltip.constants.Constants.Friend.FRIEND_NAME;
 import static pl.ute.culturaltip.constants.Constants.Friend.FRIEND_PHONE;
 import static pl.ute.culturaltip.constants.Constants.Permission.*;
@@ -50,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int LATITUDE = 0;
     private static final int LONGITUDE = 1;
     private static final int REQUEST_CODE = 1;
-    private static final String FRIENDS_PREFERENCIES_KEY = "friends";
 
     private List<FriendData> friends = new ArrayList<>();
     private DefaultListFragment friendFragment;
@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
             notificationButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    saveFriendList();
                     startActivity(new Intent(getContext(), NotificationActivity.class));
                 }
             });
@@ -133,25 +134,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-
-        try {
-            SharedPreferences settings = PreferenceManager
-                    .getDefaultSharedPreferences(getBaseContext());
-            SharedPreferences.Editor editor = settings.edit();
-            Gson gson = new Gson();
-            editor.putString(FRIENDS_PREFERENCIES_KEY, gson.toJson(friends));
-            editor.apply();
-        } catch (Exception e) {
-            Log.e("Preferencies exception", e.getMessage(), e);
-
-        }
+        saveFriendList();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiverMainActivity);
-
     }
 
     @Override
@@ -164,6 +153,20 @@ public class MainActivity extends AppCompatActivity {
                 friendData.setPhone(data.getStringExtra(FRIEND_PHONE));
                 addToFriendList(friendData);
             }
+        }
+    }
+
+    private void saveFriendList() {
+        try {
+            SharedPreferences settings = PreferenceManager
+                    .getDefaultSharedPreferences(getBaseContext());
+            SharedPreferences.Editor editor = settings.edit();
+            Gson gson = new Gson();
+            editor.putString(FRIENDS_PREFERENCIES_KEY, gson.toJson(friends));
+            editor.apply();
+        } catch (Exception e) {
+            Log.e("Preferencies exception", e.getMessage(), e);
+
         }
     }
 

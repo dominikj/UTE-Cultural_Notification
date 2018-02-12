@@ -28,6 +28,7 @@ import static pl.ute.culturaltip.constants.Constants.Message.CREATED_MESSAGE;
 public class CreateMessageActivity extends AbstractNavigationActivity {
 
     private static final String EXTRACTS_ARTICLE_API = "https://pl.wikipedia.org/w/api.php";
+    private static final int MAX_SMS_LENGTH = 160;
 
     private String message;
     private TextView messageText;
@@ -42,6 +43,14 @@ public class CreateMessageActivity extends AbstractNavigationActivity {
 
     @Override
     protected Intent createIntentForForward() {
+        if (message == null) {
+            message = messageText.getText().toString();
+        }
+
+        if (message.length() > MAX_SMS_LENGTH) {
+            messageText.setError(getString(R.string.message_is_too_long));
+            return null;
+        }
         Intent intent = new Intent(getContext(), SetTimeNotificationActivity.class);
         intent.putExtra(CREATED_MESSAGE, message);
 

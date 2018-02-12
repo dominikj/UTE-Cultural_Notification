@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import pl.ute.culturaltip.api.orange.LocationHttpRequestTask;
+import pl.ute.culturaltip.api.orange.location.LocationHttpRequestTask;
 import pl.ute.culturaltip.restapiutils.RestApiParams;
 
 /**

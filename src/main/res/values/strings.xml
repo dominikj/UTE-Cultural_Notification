@@ -35,4 +35,5 @@
     <string name="friends_list">Friends</string>
     <string name="poi_list">Points of interest</string>
     <string name="article_list">Articles</string>
+    <string name="message_is_too_long">Message is too long</string>
 </resources>

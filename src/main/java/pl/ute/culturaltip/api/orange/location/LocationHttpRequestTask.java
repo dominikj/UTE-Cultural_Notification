@@ -1,4 +1,4 @@
-package pl.ute.culturaltip.api.orange;
+package pl.ute.culturaltip.api.orange.location;
 
 import android.content.Context;
 import android.content.Intent;

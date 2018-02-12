@@ -12,6 +12,15 @@ public class NotificationData {
     private Date date;
     private String message;
     private NotificationStatus status;
+    private boolean isScheduled;
+
+    public boolean isScheduled() {
+        return isScheduled;
+    }
+
+    public void setScheduled(boolean scheduled) {
+        isScheduled = scheduled;
+    }
 
     public NotificationData() {
         this.status = NotificationStatus.WAITING_TO_SEND;

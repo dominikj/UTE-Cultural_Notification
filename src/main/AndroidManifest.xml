@@ -29,6 +29,9 @@
         </activity>
 
         <service android:name="pl.ute.culturaltip.service.MainService" />
+        <service android:name="pl.ute.culturaltip.service.NotificationService" />
+
+        <receiver android:name=".receiver.ReceiverNotificationService" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -43,30 +46,30 @@
 
         <activity
             android:name="pl.ute.culturaltip.activity.MapsActivity"
-            android:label="@string/title_activity_maps"/>
+            android:label="@string/title_activity_maps" />
         <activity
             android:name="pl.ute.culturaltip.activity.AddFriendAcitivity"
-            android:label="@string/add_friend_activity"/>
+            android:label="@string/add_friend_activity" />
 
         <activity
             android:name="pl.ute.culturaltip.activity.NotificationActivity"
-            android:label="@string/notification_activity"/>
+            android:label="@string/notification_activity" />
 
         <activity
             android:name="pl.ute.culturaltip.activity.SelectPoiActivity"
-            android:label="@string/select_poi_activity"/>
+            android:label="@string/select_poi_activity" />
 
         <activity
             android:name="pl.ute.culturaltip.activity.SelectArticleActivity"
-            android:label="@string/select_article_activity"/>
+            android:label="@string/select_article_activity" />
 
         <activity
             android:name="pl.ute.culturaltip.activity.CreateMessageActivity"
-            android:label="@string/create_message_activity"/>
+            android:label="@string/create_message_activity" />
 
         <activity
             android:name="pl.ute.culturaltip.activity.SetTimeNotificationActivity"
-            android:label="@string/set_time_notificatinon_activity"/>
+            android:label="@string/set_time_notificatinon_activity" />
 
     </application>
 

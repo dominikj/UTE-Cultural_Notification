@@ -1,4 +1,4 @@
-package pl.ute.culturaltip.api.orange;
+package pl.ute.culturaltip.api.orange.location;
 
 import java.util.Date;
 import java.util.TimeZone;

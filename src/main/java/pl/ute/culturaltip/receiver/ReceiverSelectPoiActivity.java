@@ -8,7 +8,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import pl.ute.culturaltip.activity.SelectPoiActivity;
@@ -31,8 +31,12 @@ public class ReceiverSelectPoiActivity extends BroadcastReceiver {
                 gson.fromJson(intent.getStringExtra(POI_RESPONSE), PoiResponse.class);
 
         if (poiResponse.getResults() == null || poiResponse.getResults().isEmpty()) {
-            List<String> errorItems = Arrays.asList("We are sorry, but no results found",
-                    poiResponse.getErrorMessage());
+            List<String> errorItems = Collections.singletonList("We are sorry, but no results found");
+
+            if (poiResponse.getErrorMessage() != null) {
+                errorItems.add(poiResponse.getErrorMessage());
+            }
+            
             activity.getPoiListFragment().setItemsList(errorItems);
             activity.disableShowMapAndForwardButtons();
             return;
