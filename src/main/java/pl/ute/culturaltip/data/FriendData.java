@@ -7,6 +7,8 @@ package pl.ute.culturaltip.data;
 public class FriendData {
     private String name;
     private String phone;
+    private String latitude;
+    private String longitude;
 
     public String getName() {
         return name;
@@ -22,5 +24,21 @@ public class FriendData {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 }

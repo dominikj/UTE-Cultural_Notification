@@ -22,11 +22,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import pl.ute.culturaltip.api.orange.sms.SendSmsHttpRequestTask;
+import pl.ute.culturaltip.constants.Constants;
 import pl.ute.culturaltip.data.FriendData;
 import pl.ute.culturaltip.data.NotificationData;
 import pl.ute.culturaltip.receiver.ReceiverNotificationService;
 import pl.ute.culturaltip.restapiutils.RestApiParams;
 
+import static pl.ute.culturaltip.constants.Constants.ApiKey.API_KEY_ORANGE;
+import static pl.ute.culturaltip.constants.Constants.ApiUri.ApiOrange.SEND_SMS_API_URI;
 import static pl.ute.culturaltip.constants.Constants.Friend.FRIENDS_LIST;
 import static pl.ute.culturaltip.constants.Constants.IntentCode.SEND_SMS_INTENT_NOTIFICATION_ACTIVITY;
 import static pl.ute.culturaltip.constants.Constants.Notification.CREATED_NOTIFICATION;
@@ -36,9 +39,7 @@ import static pl.ute.culturaltip.constants.Constants.Notification.CREATED_NOTIFI
  */
 
 public class NotificationService extends IntentService {
-    private static final String API_KEY = "rIeprPWnQZRXtGO9uvzAZolOPIUGZ77L";
-    private static final String SEND_SMS_API_URI =
-            "https://apitest.orange.pl/Messaging/v1/SMSOnnet";
+
     private static final String POLISH_AREA_CODE = "48";
     private ReceiverNotificationService receiverActivity;
 
@@ -115,7 +116,7 @@ public class NotificationService extends IntentService {
         queryParams.put("to", to);
         queryParams.put("from", getMsisdn());
         queryParams.put("msg", message);
-        queryParams.put("apikey", API_KEY);
+        queryParams.put("apikey", API_KEY_ORANGE);
         params.setQueryParams(queryParams);
 
         return params;

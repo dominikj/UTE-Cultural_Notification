@@ -19,7 +19,7 @@ import pl.ute.culturaltip.R;
 import static android.R.layout.simple_list_item_1;
 
 public class DefaultListFragment extends ListFragment implements OnItemClickListener {
-    private int currentSelectedPosition = -1;
+    protected int currentSelectedPosition = NONE_SELECTED;
     public static final int NONE_SELECTED = -1;
 
     @Override

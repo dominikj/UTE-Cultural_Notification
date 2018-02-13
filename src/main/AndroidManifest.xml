@@ -28,7 +28,6 @@
             </intent-filter>
         </activity>
 
-        <service android:name="pl.ute.culturaltip.service.MainService" />
         <service android:name="pl.ute.culturaltip.service.NotificationService" />
 
         <receiver android:name=".receiver.ReceiverNotificationService" />

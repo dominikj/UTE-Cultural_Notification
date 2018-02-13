@@ -30,10 +30,14 @@ import pl.ute.culturaltip.receiver.ReceiverSelectPoiActivity;
 import pl.ute.culturaltip.restapiutils.RestApiParams;
 
 import static android.Manifest.permission.READ_PHONE_STATE;
+import static android.widget.AdapterView.INVALID_POSITION;
+import static pl.ute.culturaltip.constants.Constants.ApiKey.API_KEY_GOOGLE;
+import static pl.ute.culturaltip.constants.Constants.ApiUri.ApiOrange.NEARBY_SEARCH_API_URI;
+import static pl.ute.culturaltip.constants.Constants.Location.Gps.MIN_DISTANCE_CHANGE;
+import static pl.ute.culturaltip.constants.Constants.Location.Gps.MIN_UPDATE_TIME;
 import static pl.ute.culturaltip.constants.Constants.Permission.REQUEST_PERMISSIONS;
 import static pl.ute.culturaltip.constants.Constants.Permission.REQUEST_READ_PHONE_PERMISSIONS;
 import static pl.ute.culturaltip.constants.Constants.Poi.NAME_OF_SELECTED_POI;
-import static pl.ute.culturaltip.fragment.DefaultListFragment.NONE_SELECTED;
 
 /**
  * Created by dominik on 10.02.18.
@@ -47,14 +51,7 @@ public class SelectPoiActivity extends AbstractAsynchronousListActivity
     private static final int DEFAULT_RADIUS = 1000;
     private static final String SEARCH_TYPES =
             "art_gallery|cemetery|church|zoo|museum|movie_rental|movie_theater|library"
-                    + "|park|painter|stadium|amusement_park|amusement_park|casino|shopping_mall";
-
-    private static final String NEARBY_SEARCH_API =
-            "https://maps.googleapis.com/maps/api/place/textsearch/json";
-    private static final int MIN_UPDATE_TIME = 60000;
-    private static final int MIN_DISTANCE_CHANGE = 10;
-    //    private static final String API_KEY = "AIzaSyBeZxPitp7UPkyDzYPS1rpLSMvObNcmA-Q";
-    private static final String API_KEY = "AIzaSyB3L5EKLJhxgz0zu5TAJ2nHG0nwyVktGoE";
+                    + "|park|painter|stadium|amusement_park|casino|shopping_mall";
 
     private int radius = DEFAULT_RADIUS;
     private TextView radiusView;
@@ -114,7 +111,7 @@ public class SelectPoiActivity extends AbstractAsynchronousListActivity
             showOnMapButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (getPoiListFragment().getSelectedPosition() != NONE_SELECTED) {
+                    if (getPoiListFragment().getSelectedPosition() != INVALID_POSITION) {
                         startActivityForResult(createLocationIntent(), REQUEST_CODE);
                     }
                 }
@@ -126,7 +123,7 @@ public class SelectPoiActivity extends AbstractAsynchronousListActivity
     protected Intent createIntentForForward() {
         Intent intent = new Intent(getContext(), SelectArticleActivity.class);
         int selectedPosition = getListFragment().getSelectedPosition();
-        if (getListElements() != null && selectedPosition != NONE_SELECTED) {
+        if (getListElements() != null && selectedPosition != INVALID_POSITION) {
             PoiResponseResult selectedResult = getPois().get(selectedPosition);
             intent.putExtra(NAME_OF_SELECTED_POI, selectedResult.getName());
         }
@@ -209,7 +206,7 @@ public class SelectPoiActivity extends AbstractAsynchronousListActivity
     private Intent createLocationIntent() {
         Intent intent = new Intent(getContext(), MapsActivity.class);
         int selectedPosition = getPoiListFragment().getSelectedPosition();
-        if (selectedPosition != NONE_SELECTED && getListElements() != null) {
+        if (selectedPosition != INVALID_POSITION && getListElements() != null) {
             intent.putExtra(Constants.Location.LATITUDE,
                     String.valueOf(getPois().get(selectedPosition)
                             .getGeometry().getLocation().getLat()));
@@ -223,14 +220,14 @@ public class SelectPoiActivity extends AbstractAsynchronousListActivity
 
     private RestApiParams createSearchPoiParams(double latitude, double longitude) {
         RestApiParams params = new RestApiParams();
-        params.setUri(NEARBY_SEARCH_API);
+        params.setUri(NEARBY_SEARCH_API_URI);
 
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("location", latitude + "," + longitude);
         queryParams.put("radius", String.valueOf(radius));
         queryParams.put("type", SEARCH_TYPES);
         queryParams.put("language", "pl");
-        queryParams.put("key", API_KEY);
+        queryParams.put("key", API_KEY_GOOGLE);
         params.setQueryParams(queryParams);
 
         return params;

@@ -36,7 +36,7 @@ public class ReceiverSelectPoiActivity extends BroadcastReceiver {
             if (poiResponse.getErrorMessage() != null) {
                 errorItems.add(poiResponse.getErrorMessage());
             }
-            
+
             activity.getPoiListFragment().setItemsList(errorItems);
             activity.disableShowMapAndForwardButtons();
             return;

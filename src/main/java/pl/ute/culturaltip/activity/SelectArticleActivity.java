@@ -17,16 +17,16 @@ import pl.ute.culturaltip.fragment.DefaultListFragment;
 import pl.ute.culturaltip.receiver.ReceiverSelectArticleActivity;
 import pl.ute.culturaltip.restapiutils.RestApiParams;
 
-import static pl.ute.culturaltip.constants.Constants.Message.IS_OWN_MESSAGE;
+import static android.widget.AdapterView.INVALID_POSITION;
+import static pl.ute.culturaltip.constants.Constants.ApiUri.ApiOrange.WIKIPEDIA_API_URI;
 import static pl.ute.culturaltip.constants.Constants.Article.NAME_OF_SELECTED_ARTICLE;
-import static pl.ute.culturaltip.fragment.DefaultListFragment.*;
+import static pl.ute.culturaltip.constants.Constants.Message.IS_OWN_MESSAGE;
 
 /**
  * Created by dominik on 11.02.18.
  */
 
 public class SelectArticleActivity extends AbstractAsynchronousListActivity {
-    private static final String OPENSEARCH_API = "https://pl.wikipedia.org/w/api.php";
     private String nameOfSelectedPoi = "";
 
     public SelectArticleActivity() {
@@ -77,7 +77,8 @@ public class SelectArticleActivity extends AbstractAsynchronousListActivity {
     protected Intent createIntentForForward() {
         Intent intent = new Intent(getContext(), CreateMessageActivity.class);
         if (isElementSelectedOnList()) {
-            OpenSearchItem selectedArticle = getArticles().get(getListFragment().getSelectedPosition());
+            OpenSearchItem selectedArticle = getArticles().get(getListFragment()
+                    .getSelectedPosition());
             intent.putExtra(NAME_OF_SELECTED_ARTICLE, selectedArticle.getTitle());
         }
         return intent;
@@ -98,7 +99,7 @@ public class SelectArticleActivity extends AbstractAsynchronousListActivity {
 
     private RestApiParams createSearchArticleParams(String query) {
         RestApiParams params = new RestApiParams();
-        params.setUri(OPENSEARCH_API);
+        params.setUri(WIKIPEDIA_API_URI);
 
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("action", "query");
@@ -111,6 +112,6 @@ public class SelectArticleActivity extends AbstractAsynchronousListActivity {
     }
 
     private boolean isElementSelectedOnList() {
-        return getListElements() != null && getListFragment().getSelectedPosition() != NONE_SELECTED;
+        return getListElements() != null && getListFragment().getSelectedPosition() != INVALID_POSITION;
     }
 }

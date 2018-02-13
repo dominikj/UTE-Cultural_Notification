@@ -1,11 +1,11 @@
 package pl.ute.culturaltip.api.orange.location;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Date;
 import java.util.TimeZone;
 
-/**
- * Created by dominik on 05.02.18.
- */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LocationResponse {
     private String msisdn;
     private String latitude;
@@ -15,6 +15,15 @@ public class LocationResponse {
     private Date timestamp;
     private TimeZone timezone;
     private String result;
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public String getResult() {
         return result;

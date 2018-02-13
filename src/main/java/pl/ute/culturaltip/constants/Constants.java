@@ -14,6 +14,12 @@ public interface Constants {
     interface Location {
         String LATITUDE = "latitude";
         String LONGITUDE = "longitude";
+        String DESCRIPTION = "description";
+
+        interface Gps {
+            int MIN_UPDATE_TIME = 60000;
+            int MIN_DISTANCE_CHANGE = 10;
+        }
     }
 
     interface Poi {
@@ -63,5 +69,22 @@ public interface Constants {
         int REQUEST_READ_PHONE_PERMISSIONS = 1;
         String[] REQUEST_PERMISSIONS = {READ_PHONE_STATE, INTERNET, ACCESS_COARSE_LOCATION,
                 READ_SMS, ACCESS_FINE_LOCATION};
+    }
+
+    interface ApiKey {
+        String API_KEY_ORANGE = "rIeprPWnQZRXtGO9uvzAZolOPIUGZ77L";
+        //        String API_KEY_GOOGLE = "AIzaSyBeZxPitp7UPkyDzYPS1rpLSMvObNcmA-Q";
+        String API_KEY_GOOGLE = "AIzaSyB3L5EKLJhxgz0zu5TAJ2nHG0nwyVktGoE";
+    }
+
+    interface ApiUri {
+        interface ApiOrange {
+            String LOCATION_API_URI = "https://apitest.orange.pl/Localization/v1/GeoLocation";
+            String SEND_SMS_API_URI = "https://apitest.orange.pl/Messaging/v1/SMSOnnet";
+            String NEARBY_SEARCH_API_URI =
+                    "https://maps.googleapis.com/maps/api/place/textsearch/json";
+            String WIKIPEDIA_API_URI = "https://pl.wikipedia.org/w/api.php";
+
+        }
     }
 }

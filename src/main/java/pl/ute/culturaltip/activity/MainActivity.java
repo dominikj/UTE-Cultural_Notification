@@ -1,11 +1,14 @@
 package pl.ute.culturaltip.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -23,38 +26,45 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import pl.ute.culturaltip.constants.Constants.Permission;
-import pl.ute.culturaltip.service.MainService;
 import pl.ute.culturaltip.R;
-import pl.ute.culturaltip.receiver.ReceiverMainActivity;
+import pl.ute.culturaltip.api.orange.location.LocationHttpRequestTask;
 import pl.ute.culturaltip.constants.Constants;
 import pl.ute.culturaltip.constants.Constants.Location;
 import pl.ute.culturaltip.data.FriendData;
-import pl.ute.culturaltip.fragment.DefaultListFragment;
+import pl.ute.culturaltip.fragment.FriendListFragment;
+import pl.ute.culturaltip.receiver.ReceiverMainActivity;
+import pl.ute.culturaltip.restapiutils.RestApiParams;
 
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.Manifest.permission.INTERNET;
 import static android.Manifest.permission.READ_PHONE_STATE;
-import static android.Manifest.permission.READ_SMS;
+import static android.widget.AdapterView.INVALID_POSITION;
+import static pl.ute.culturaltip.R.id.position_text;
+import static pl.ute.culturaltip.constants.Constants.ApiKey.API_KEY_ORANGE;
+import static pl.ute.culturaltip.constants.Constants.ApiUri.ApiOrange.LOCATION_API_URI;
 import static pl.ute.culturaltip.constants.Constants.Friend.FRIENDS_PREFERENCIES_KEY;
 import static pl.ute.culturaltip.constants.Constants.Friend.FRIEND_NAME;
 import static pl.ute.culturaltip.constants.Constants.Friend.FRIEND_PHONE;
-import static pl.ute.culturaltip.constants.Constants.Permission.*;
+import static pl.ute.culturaltip.constants.Constants.Location.Gps.MIN_DISTANCE_CHANGE;
+import static pl.ute.culturaltip.constants.Constants.Location.Gps.MIN_UPDATE_TIME;
+import static pl.ute.culturaltip.constants.Constants.Permission.REQUEST_PERMISSIONS;
 import static pl.ute.culturaltip.constants.Constants.Permission.REQUEST_READ_PHONE_PERMISSIONS;
-import static pl.ute.culturaltip.fragment.DefaultListFragment.NONE_SELECTED;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LocationListener {
+    private static final int REQUEST_CODE = 1;
     private static final int LATITUDE = 0;
     private static final int LONGITUDE = 1;
-    private static final int REQUEST_CODE = 1;
 
     private List<FriendData> friends = new ArrayList<>();
-    private DefaultListFragment friendFragment;
+    private FriendListFragment friendFragment;
     private ReceiverMainActivity receiverMainActivity;
+    private Button showMapButton;
+    private LocationManager locationManager;
+    private double myCurrentLatitude;
+    private double myCurrentLongitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter(Constants.IntentCode.LOCATION_INTENT_MAIN_ACTIVITY);
         registerReceiver(receiverMainActivity, filter);
 
-        friendFragment = (DefaultListFragment) getFragmentManager()
+        friendFragment = (FriendListFragment) getFragmentManager()
                 .findFragmentById(R.id.friends_list);
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -74,18 +84,19 @@ public class MainActivity extends AppCompatActivity {
         if (!friends.trim().isEmpty()) {
             restoreFriendList(friends);
         }
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        startService(new Intent(this, MainService.class));
         friendFragment.setListName(getString(R.string.friends_list));
-
-        Button showMapButton = (Button) findViewById(R.id.show_map_btn);
+        showMapButton = (Button) findViewById(R.id.show_map_btn);
         Button addFriendButton = (Button) findViewById(R.id.add_friend_btn);
         Button removeFriendButton = (Button) findViewById(R.id.remove_friend_btn);
         Button notificationButton = (Button) findViewById(R.id.show_notification_btn);
+        Button showMeOnMapButton = (Button) findViewById(R.id.show_me_on_map_btn);
 
         if (addFriendButton != null) {
             addFriendButton.setOnClickListener(new View.OnClickListener() {
@@ -112,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     int selectedPosition = friendFragment.getSelectedPosition();
-                    if (MainActivity.this.friends.size() != 0 && selectedPosition != NONE_SELECTED) {
+                    if (isListFulfilledProperly()) {
                         MainActivity.this.friends.remove(selectedPosition);
                         friendFragment.setItemsList(buildFriendItemList(MainActivity.this.friends));
                     }
@@ -129,6 +140,26 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+        showMeOnMapButton.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("MissingPermission")
+            @Override
+            public void onClick(View v) {
+                if (isPermissionsGranted()) {
+                    locationManager.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER, MIN_UPDATE_TIME, MIN_DISTANCE_CHANGE,
+                            (LocationListener) getContext());
+                    onLocationChanged(
+                            locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER));
+                    startActivity(createMyLocationIntent(myCurrentLatitude, myCurrentLongitude));
+                }
+            }
+        });
+    }
+
+    private boolean isPermissionsGranted() {
+        int permissionCheck = ContextCompat.checkSelfPermission(this, READ_PHONE_STATE);
+        return permissionCheck == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
@@ -191,9 +222,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getUserPermissions() {
-        int permissionCheck = ContextCompat.checkSelfPermission(this, READ_PHONE_STATE);
-
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+        if (!isPermissionsGranted()) {
             ActivityCompat.requestPermissions(this, REQUEST_PERMISSIONS,
                     REQUEST_READ_PHONE_PERMISSIONS);
         }
@@ -205,16 +234,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Nullable
     private Intent createLocationIntent() {
-        Intent intent = new Intent(getContext(), MapsActivity.class);
-        TextView positionTextView = (TextView) findViewById(R.id.position_text);
-        if (positionTextView != null) {
-            String positionText = positionTextView.getText().toString();
-            String[] coordinates = positionText.split(" : ");
-            intent.putExtra(Location.LATITUDE, getOnlyNumber(coordinates[LATITUDE]));
-            intent.putExtra(Location.LONGITUDE, getOnlyNumber(coordinates[LONGITUDE]));
-            return intent;
+        FriendData friendData = friends.get(friendFragment.getSelectedPosition());
+
+        if (friendData.getLatitude() == null || friendData.getLongitude() == null) {
+            return null;
         }
-        return null;
+
+        Intent intent = new Intent(getContext(), MapsActivity.class);
+        intent.putExtra(Location.LATITUDE, getOnlyNumber(friendData.getLatitude()));
+        intent.putExtra(Location.LONGITUDE, getOnlyNumber(friendData.getLongitude()));
+        return intent;
     }
 
     private String getOnlyNumber(String coordinate) {
@@ -232,5 +261,74 @@ public class MainActivity extends AppCompatActivity {
     private String buildFriendItem(FriendData friendData) {
         return friendData.getName().concat("(").concat(friendData.getPhone()).concat(")");
     }
+
+    private RestApiParams createLocationParams(int selectedFriendPosition) {
+
+        if (friends == null || selectedFriendPosition == INVALID_POSITION) {
+            return null;
+        }
+
+        RestApiParams params = new RestApiParams();
+        params.setUri(LOCATION_API_URI);
+
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("msisdn", friends.get(selectedFriendPosition).getPhone());
+        queryParams.put("apikey", API_KEY_ORANGE);
+        params.setQueryParams(queryParams);
+
+        return params;
+    }
+
+    private boolean isListFulfilledProperly() {
+        return this.friends.size() != 0 && friendFragment.getSelectedPosition() != INVALID_POSITION;
+    }
+
+    @Override
+    public void onLocationChanged(android.location.Location location) {
+        TextView positionText = (TextView) findViewById(position_text);
+
+        this.myCurrentLatitude = location.getLatitude();
+        this.myCurrentLongitude = location.getLongitude();
+        positionText.setText(getString(R.string.position_data,
+                String.valueOf(myCurrentLatitude),
+                String.valueOf(myCurrentLongitude)));
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        //NOP
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        //NOP
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        //NOP
+    }
+
+    public void onSelectFriend(int selectedPosition) {
+        showMapButton.setEnabled(false);
+        new LocationHttpRequestTask(this).execute(createLocationParams(selectedPosition));
+    }
+
+    public void setLocationForCurrentSelectedFriend(String latitude, String longitude) {
+        if (isListFulfilledProperly()) {
+            FriendData friendData = this.friends.get(friendFragment.getSelectedPosition());
+            friendData.setLatitude(latitude);
+            friendData.setLongitude(longitude);
+        }
+    }
+
+    private Intent createMyLocationIntent(double latitude, double longitude) {
+        Intent intent = new Intent(getContext(), MapsActivity.class);
+        intent.putExtra(Location.LATITUDE, String.valueOf(latitude));
+        intent.putExtra(Location.LONGITUDE, String.valueOf(longitude));
+        return intent;
+    }
+
 }
 

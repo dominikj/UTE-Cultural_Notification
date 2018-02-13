@@ -17,6 +17,7 @@ import pl.ute.culturaltip.constants.Constants;
 import pl.ute.culturaltip.receiver.ReceiverCreateMessageActivity;
 import pl.ute.culturaltip.restapiutils.RestApiParams;
 
+import static pl.ute.culturaltip.constants.Constants.ApiUri.ApiOrange.WIKIPEDIA_API_URI;
 import static pl.ute.culturaltip.constants.Constants.Article.NAME_OF_SELECTED_ARTICLE;
 import static pl.ute.culturaltip.constants.Constants.IntentCode.MESSAGE_INTENT_CREATE_MESSAGE_ACTIVITY;
 import static pl.ute.culturaltip.constants.Constants.Message.CREATED_MESSAGE;
@@ -27,7 +28,6 @@ import static pl.ute.culturaltip.constants.Constants.Message.CREATED_MESSAGE;
 
 public class CreateMessageActivity extends AbstractNavigationActivity {
 
-    private static final String EXTRACTS_ARTICLE_API = "https://pl.wikipedia.org/w/api.php";
     private static final int MAX_SMS_LENGTH = 160;
 
     private String message;
@@ -129,7 +129,7 @@ public class CreateMessageActivity extends AbstractNavigationActivity {
 
     private RestApiParams createExtractsArticleParams(String articleName) {
         RestApiParams params = new RestApiParams();
-        params.setUri(EXTRACTS_ARTICLE_API);
+        params.setUri(WIKIPEDIA_API_URI);
 
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("action", "query");

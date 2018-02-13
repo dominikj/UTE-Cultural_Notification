@@ -7,7 +7,8 @@
     <string name="select_article_activity">Select interesting article</string>
     <string name="create_message_activity">Message</string>
     <string name="set_time_notificatinon_activity">Notification time</string>
-    <string name="show_map">Show map</string>
+    <string name="show_map">Show on map</string>
+    <string name="show_me_on_map">Show me on map</string>
     <string name="notification">Notification</string>
     <string name="add_friend">Add friend</string>
     <string name="remove_friend">Remove friend</string>

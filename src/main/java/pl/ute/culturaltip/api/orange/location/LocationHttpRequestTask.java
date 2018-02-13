@@ -52,6 +52,7 @@ public class LocationHttpRequestTask extends AsyncTask<RestApiParams, Object, Lo
 
         intent.putExtra(Constants.Location.LATITUDE, answer.getLatitude());
         intent.putExtra(Constants.Location.LONGITUDE, answer.getLongitude());
+        intent.putExtra(Constants.Location.DESCRIPTION, answer.getDescription());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Log.i("Location - latitude", answer.getLatitude());
         Log.i("Location - longitude", answer.getLongitude());
