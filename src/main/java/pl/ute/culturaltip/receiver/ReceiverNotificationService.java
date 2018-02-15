@@ -1,21 +1,22 @@
 package pl.ute.culturaltip.receiver;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.gson.Gson;
 
-import java.util.Map;
-
-import pl.ute.culturaltip.activity.CreateMessageActivity;
+import pl.ute.culturaltip.R;
 import pl.ute.culturaltip.activity.NotificationActivity;
 import pl.ute.culturaltip.api.orange.sms.SendSmsResponse;
-import pl.ute.culturaltip.api.wikipedia.extracts.ExtractsArticleResponse;
 import pl.ute.culturaltip.enums.NotificationStatus;
 
-import static pl.ute.culturaltip.constants.Constants.Extracts.EXTRACTS_RESPONSE;
 import static pl.ute.culturaltip.constants.Constants.Message.SEND_SMS_RESPONSE;
 
 /**
@@ -41,11 +42,33 @@ public class ReceiverNotificationService extends BroadcastReceiver {
 
         if (isDeliveredToNetwork && isResultOk) {
             activity.setNotificationStatus(NotificationStatus.SENT_OK);
+            showNotification(context);
             return;
         }
 
         activity.setNotificationStatus(NotificationStatus.SENT_ERROR);
+        showNotification(context);
 
+    }
 
+//        TODO On-screen notifications
+    private void showNotification(Context context) {
+        NotificationManager notificationManager = (NotificationManager)
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+                new Intent(), PendingIntent.FLAG_ONE_SHOT);
+
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(context)
+                        .setContentTitle("NOTIFICATION")
+                        .setDefaults(Notification.DEFAULT_SOUND)
+                        .setStyle(new NotificationCompat.BigTextStyle()
+                                .bigText("NOTI"))
+                        .setContentText("NOTI")
+                        .setPriority(Notification.PRIORITY_MAX);
+
+        builder.setContentIntent(contentIntent);
+        notificationManager.notify((int) 666, builder.build());
     }
 }

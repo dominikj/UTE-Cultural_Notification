@@ -35,7 +35,7 @@ import pl.ute.culturaltip.api.orange.location.LocationHttpRequestTask;
 import pl.ute.culturaltip.constants.Constants;
 import pl.ute.culturaltip.constants.Constants.Location;
 import pl.ute.culturaltip.data.FriendData;
-import pl.ute.culturaltip.fragment.FriendListFragment;
+import pl.ute.culturaltip.fragment.ListenableListFragment;
 import pl.ute.culturaltip.receiver.ReceiverMainActivity;
 import pl.ute.culturaltip.restapiutils.RestApiParams;
 
@@ -53,13 +53,11 @@ import static pl.ute.culturaltip.constants.Constants.Permission.REQUEST_PERMISSI
 import static pl.ute.culturaltip.constants.Constants.Permission.REQUEST_READ_PHONE_PERMISSIONS;
 
 
-public class MainActivity extends AppCompatActivity implements LocationListener {
+public class MainActivity extends AppCompatActivity implements LocationListener, AsynchronousListListener {
     private static final int REQUEST_CODE = 1;
-    private static final int LATITUDE = 0;
-    private static final int LONGITUDE = 1;
 
     private List<FriendData> friends = new ArrayList<>();
-    private FriendListFragment friendFragment;
+    private ListenableListFragment friendFragment;
     private ReceiverMainActivity receiverMainActivity;
     private Button showMapButton;
     private LocationManager locationManager;
@@ -76,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         IntentFilter filter = new IntentFilter(Constants.IntentCode.LOCATION_INTENT_MAIN_ACTIVITY);
         registerReceiver(receiverMainActivity, filter);
 
-        friendFragment = (FriendListFragment) getFragmentManager()
+        friendFragment = (ListenableListFragment) getFragmentManager()
                 .findFragmentById(R.id.friends_list);
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -310,11 +308,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         //NOP
     }
 
-    public void onSelectFriend(int selectedPosition) {
-        showMapButton.setEnabled(false);
-        new LocationHttpRequestTask(this).execute(createLocationParams(selectedPosition));
-    }
-
     public void setLocationForCurrentSelectedFriend(String latitude, String longitude) {
         if (isListFulfilledProperly()) {
             FriendData friendData = this.friends.get(friendFragment.getSelectedPosition());
@@ -330,5 +323,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         return intent;
     }
 
+    @Override
+    public void onSelectItem(int selectedPosition) {
+        showMapButton.setEnabled(false);
+        new LocationHttpRequestTask(this).execute(createLocationParams(selectedPosition));
+    }
 }
 

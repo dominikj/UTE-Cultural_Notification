@@ -18,7 +18,7 @@ import pl.ute.culturaltip.receiver.ReceiverSelectArticleActivity;
 import pl.ute.culturaltip.restapiutils.RestApiParams;
 
 import static android.widget.AdapterView.INVALID_POSITION;
-import static pl.ute.culturaltip.constants.Constants.ApiUri.ApiOrange.WIKIPEDIA_API_URI;
+import static pl.ute.culturaltip.constants.Constants.ApiUri.ApiWikipedia.WIKIPEDIA_API_URI;
 import static pl.ute.culturaltip.constants.Constants.Article.NAME_OF_SELECTED_ARTICLE;
 import static pl.ute.culturaltip.constants.Constants.Message.IS_OWN_MESSAGE;
 

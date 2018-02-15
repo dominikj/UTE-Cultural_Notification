@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RatingBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -22,17 +23,21 @@ import java.util.List;
 import java.util.Map;
 
 import pl.ute.culturaltip.R;
+import pl.ute.culturaltip.api.airly.AirQualityRequestTask;
 import pl.ute.culturaltip.api.google.PoiHttpRequestTask;
+import pl.ute.culturaltip.api.google.PoiLocation;
 import pl.ute.culturaltip.api.google.PoiResponseResult;
 import pl.ute.culturaltip.constants.Constants;
 import pl.ute.culturaltip.fragment.DefaultListFragment;
 import pl.ute.culturaltip.receiver.ReceiverSelectPoiActivity;
+import pl.ute.culturaltip.receiver.ReceiverSelectPoiAirQualityActivity;
 import pl.ute.culturaltip.restapiutils.RestApiParams;
 
 import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.widget.AdapterView.INVALID_POSITION;
 import static pl.ute.culturaltip.constants.Constants.ApiKey.API_KEY_GOOGLE;
-import static pl.ute.culturaltip.constants.Constants.ApiUri.ApiOrange.NEARBY_SEARCH_API_URI;
+import static pl.ute.culturaltip.constants.Constants.ApiUri.ApiAirly.AIRLY_API_URI;
+import static pl.ute.culturaltip.constants.Constants.ApiUri.ApiGoogle.NEARBY_SEARCH_API_URI;
 import static pl.ute.culturaltip.constants.Constants.Location.Gps.MIN_DISTANCE_CHANGE;
 import static pl.ute.culturaltip.constants.Constants.Location.Gps.MIN_UPDATE_TIME;
 import static pl.ute.culturaltip.constants.Constants.Permission.REQUEST_PERMISSIONS;
@@ -44,10 +49,17 @@ import static pl.ute.culturaltip.constants.Constants.Poi.NAME_OF_SELECTED_POI;
  */
 
 public class SelectPoiActivity extends AbstractAsynchronousListActivity
-        implements SeekBar.OnSeekBarChangeListener, LocationListener {
+        implements SeekBar.OnSeekBarChangeListener, LocationListener, AsynchronousListListener {
 
+    private static final String AIR_QUALITY_GOOD = "good";
+    private static final String AIR_QUALITY_MEDIUM = "medium";
+    private static final String AIR_QUALITY_BAD = "bad";
+    private static final int LOW_POLLUTION_LEVEL = 2;
+    private static final int MEDIUM_POLLUTION_LEVEL = 4;
+    private static final float MAX_STARS = 6;
     private static final int REQUEST_CODE = 1;
     private static final int PROGRESS_SCALE = 50;
+    private static final int SEARCH_AIR_MEASUREMENT_DISTANCE = 1200;
     private static final int DEFAULT_RADIUS = 1000;
     private static final String SEARCH_TYPES =
             "art_gallery|cemetery|church|zoo|museum|movie_rental|movie_theater|library"
@@ -77,6 +89,9 @@ public class SelectPoiActivity extends AbstractAsynchronousListActivity
 
         setIntentReceiver(new ReceiverSelectPoiActivity(),
                 Constants.IntentCode.POI_INTENT_SELECT_POI_ACTIVITY);
+
+        setIntentReceiver(new ReceiverSelectPoiAirQualityActivity(),
+                Constants.IntentCode.AIR_QUALITY_INTENT_SELECT_POI_ACTIVITY);
     }
 
     @SuppressLint("MissingSuperCall")
@@ -178,6 +193,25 @@ public class SelectPoiActivity extends AbstractAsynchronousListActivity
         }
     }
 
+    public void setAirQuality(int pollutionLevel) {
+        TextView airQualityText = (TextView) findViewById(R.id.air_quality_text);
+        RatingBar airQualityRatingBar = (RatingBar) findViewById(R.id.air_quality_ratingBar);
+        if (airQualityText != null) {
+            if (pollutionLevel <= LOW_POLLUTION_LEVEL) {
+                airQualityText.setText(AIR_QUALITY_GOOD);
+            } else if (pollutionLevel <= MEDIUM_POLLUTION_LEVEL) {
+                airQualityText.setText(AIR_QUALITY_MEDIUM);
+            } else {
+                airQualityText.setText(AIR_QUALITY_BAD);
+            }
+        }
+
+        if (airQualityRatingBar != null) {
+            airQualityRatingBar.setRating(MAX_STARS - pollutionLevel);
+        }
+
+    }
+
     public void setPois(List<PoiResponseResult> pois) {
         setListElements(pois);
     }
@@ -248,5 +282,27 @@ public class SelectPoiActivity extends AbstractAsynchronousListActivity
 
     private LocationListener getLocationListener() {
         return this;
+    }
+
+    @Override
+    public void onSelectItem(int selectedPosition) {
+        if (selectedPosition != INVALID_POSITION && getListElements() != null) {
+            PoiResponseResult selectedPoi = getPois().get(selectedPosition);
+            new AirQualityRequestTask(getContext())
+                    .execute(createGetAirQualityParams(selectedPoi.getGeometry().getLocation()));
+        }
+    }
+
+    private RestApiParams createGetAirQualityParams(PoiLocation location) {
+        RestApiParams params = new RestApiParams();
+        params.setUri(AIRLY_API_URI);
+
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("latitude", String.valueOf(location.getLat()));
+        queryParams.put("longitude", String.valueOf(location.getLng()));
+        queryParams.put("maxDistance", String.valueOf(SEARCH_AIR_MEASUREMENT_DISTANCE));
+        params.setQueryParams(queryParams);
+
+        return params;
     }
 }

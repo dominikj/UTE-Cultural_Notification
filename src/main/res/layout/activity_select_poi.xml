@@ -8,6 +8,16 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="pl.ute.culturaltip.activity.MainActivity">
 
+    <TextView
+        android:id="@+id/air_quality_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/air_quality_ratingBar"
+        android:layout_toEndOf="@+id/search_pois"
+        android:layout_toRightOf="@+id/search_pois"
+        android:text="@string/empty_text"
+        android:textSize="18sp" />
+
     <Button
         android:id="@+id/show_poi_on_map"
         android:layout_width="wrap_content"
@@ -31,8 +41,9 @@
         android:id="@+id/search_pois"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/poi_list"
+        android:layout_below="@+id/seek_bar"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="11dp"
         android:text="@string/search" />
 
     <Button
@@ -55,13 +66,13 @@
 
     <fragment
         android:id="@+id/poi_list"
-        android:name="pl.ute.culturaltip.fragment.DefaultListFragment"
+        android:name="pl.ute.culturaltip.fragment.ListenableListFragment"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_above="@+id/back_select_poi_btn"
+        android:layout_height="250dp"
+        android:layout_above="@+id/textView2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="14dp" />
+        android:layout_marginBottom="17dp" />
 
     <TextView
         android:id="@+id/radius_label"
@@ -80,4 +91,27 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/radius_label"
         android:layout_marginTop="13dp" />
+
+    <RatingBar
+        android:id="@+id/air_quality_ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/show_poi_on_map"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="13dp"
+        android:layout_marginStart="13dp"
+        android:isIndicator="true"
+        android:numStars="6" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/air_quality_ratingBar"
+        android:layout_alignLeft="@+id/air_quality_ratingBar"
+        android:layout_alignStart="@+id/air_quality_ratingBar"
+        android:text="Current air quality:"
+        android:textSize="18sp" />
+
 </RelativeLayout>

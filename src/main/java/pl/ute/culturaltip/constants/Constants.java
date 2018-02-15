@@ -22,6 +22,10 @@ public interface Constants {
         }
     }
 
+    interface AirQuality {
+        String AIR_QUALITY = "airQuality";
+    }
+
     interface Poi {
         String POI_RESPONSE = "poiResponse";
         String NAME_OF_SELECTED_POI = "nameOfSelectedPoi";
@@ -46,6 +50,8 @@ public interface Constants {
     interface IntentCode {
         String LOCATION_INTENT_MAIN_ACTIVITY = "pl.ute.culturaltip.mainActivity.location";
         String POI_INTENT_SELECT_POI_ACTIVITY = "pl.ute.culturaltip.selectPoiActivity.poiList";
+        String AIR_QUALITY_INTENT_SELECT_POI_ACTIVITY =
+                "pl.ute.culturaltip.selectPoiActivity.airQuality";
         String SEND_SMS_INTENT_NOTIFICATION_ACTIVITY =
                 "pl.ute.culturaltip.notificationActivity.sendSmsResponse";
         String MESSAGE_INTENT_CREATE_MESSAGE_ACTIVITY =
@@ -75,16 +81,27 @@ public interface Constants {
         String API_KEY_ORANGE = "rIeprPWnQZRXtGO9uvzAZolOPIUGZ77L";
         //        String API_KEY_GOOGLE = "AIzaSyBeZxPitp7UPkyDzYPS1rpLSMvObNcmA-Q";
         String API_KEY_GOOGLE = "AIzaSyB3L5EKLJhxgz0zu5TAJ2nHG0nwyVktGoE";
+        String API_KEY_AIRLY = "70982f2c622742d383766561f1321535";
     }
 
     interface ApiUri {
         interface ApiOrange {
             String LOCATION_API_URI = "https://apitest.orange.pl/Localization/v1/GeoLocation";
             String SEND_SMS_API_URI = "https://apitest.orange.pl/Messaging/v1/SMSOnnet";
+        }
+
+        interface ApiGoogle {
             String NEARBY_SEARCH_API_URI =
                     "https://maps.googleapis.com/maps/api/place/textsearch/json";
-            String WIKIPEDIA_API_URI = "https://pl.wikipedia.org/w/api.php";
-
         }
+
+        interface ApiWikipedia {
+            String WIKIPEDIA_API_URI = "https://pl.wikipedia.org/w/api.php";
+        }
+
+        interface ApiAirly {
+            String AIRLY_API_URI = "https://airapi.airly.eu/v1/nearestSensor/measurements";
+        }
+
     }
 }

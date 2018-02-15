@@ -17,7 +17,7 @@ import pl.ute.culturaltip.constants.Constants;
 import pl.ute.culturaltip.receiver.ReceiverCreateMessageActivity;
 import pl.ute.culturaltip.restapiutils.RestApiParams;
 
-import static pl.ute.culturaltip.constants.Constants.ApiUri.ApiOrange.WIKIPEDIA_API_URI;
+import static pl.ute.culturaltip.constants.Constants.ApiUri.ApiWikipedia.WIKIPEDIA_API_URI;
 import static pl.ute.culturaltip.constants.Constants.Article.NAME_OF_SELECTED_ARTICLE;
 import static pl.ute.culturaltip.constants.Constants.IntentCode.MESSAGE_INTENT_CREATE_MESSAGE_ACTIVITY;
 import static pl.ute.culturaltip.constants.Constants.Message.CREATED_MESSAGE;

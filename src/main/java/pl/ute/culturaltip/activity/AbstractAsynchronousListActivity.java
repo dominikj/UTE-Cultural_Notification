@@ -3,6 +3,7 @@ package pl.ute.culturaltip.activity;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pl.ute.culturaltip.fragment.DefaultListFragment;
@@ -14,7 +15,7 @@ import pl.ute.culturaltip.fragment.DefaultListFragment;
 public abstract class AbstractAsynchronousListActivity extends AbstractNavigationActivity {
 
     private DefaultListFragment listFragment;
-    private BroadcastReceiver receiverActivity;
+    private List<BroadcastReceiver> receiversActivity = new ArrayList<>();
     private List ListElements;
 
 
@@ -24,15 +25,17 @@ public abstract class AbstractAsynchronousListActivity extends AbstractNavigatio
     }
 
     public void setIntentReceiver(BroadcastReceiver receiver, String intentCode) {
-        receiverActivity = receiver;
+        receiversActivity.add(receiver);
         IntentFilter filter = new IntentFilter(intentCode);
-        registerReceiver(receiverActivity, filter);
+        registerReceiver(receiver, filter);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(receiverActivity);
+        for (BroadcastReceiver receiver : receiversActivity) {
+            unregisterReceiver(receiver);
+        }
 
     }
 
